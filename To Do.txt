@@ -1,0 +1,6 @@
+- login
+- register
+- logout
+- differentiate UX between Applicant and Recruiter
+- job index page is customized, but job detail page is viewable by everyone
+- validate video file extensions (.mp4, etc...)

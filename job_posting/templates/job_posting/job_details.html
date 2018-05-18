@@ -1,0 +1,66 @@
+{% extends 'job_posting/base.html'%}
+{%block title%}{{job}}{%endblock%}
+{%block body%}
+
+{% load static %}
+<body data-media-url="{% get_media_prefix %}">
+	<h1>{{job.job_title}}</h1>
+	{% if is_job_poster %}
+		<form action="{%url 'job_posting:job-delete' job.id%}" method="post" style="display: inline;">
+			{%csrf_token%}
+			<input type="hidden" name="job_id" value="{{job.id}}"/>
+			<button type="submit" class="btn btn-default btn-sm">
+				<span class="glyphicon glyphicon-trash"></span>
+			</button>
+		</form>
+	{% endif %}
+	
+	{% if is_applicant %}
+		<form action="{%url 'job_posting:pitch-create' job.id%}" method="post" style="display: inline;">
+			{%csrf_token%}
+			<input type="hidden" id= "job_id" name="job_id" value="{{job.id}}"/>
+			<input type="hidden" id= "newInput" name="newInput" value="TEST"/>
+			Pitch Me! 
+			<button type="submit" class="btn btn-default btn-sm">
+				<span class="glyphicon glyphicon-edit"></span>
+			</button>
+		</form>
+	{% endif %}
+	<h3>{{job.company_name}}</h3>
+	<p>{{job.job_description}}</p>
+	<p>
+	<p>
+	{% if is_job_poster %}
+		<h3>Applicants</h3>
+		<ul>			
+			{%if job.pitch_set.all %}
+				
+				{% for job_pitch in job.pitch_set.all %}
+				<li>
+					<b>{{job_pitch.applicant.get_full_name}} </b>(pitch submitted: {{job_pitch.pitch_submitted}})
+					<br>
+					<ul>
+						<li>{{job_pitch.applicant.highlight1}}</li>
+						<li>{{job_pitch.applicant.highlight2}}</li>
+					</ul>
+					<br>
+					<video controls style="width:177px;height:100px;">
+						<source src="{% get_media_prefix %}{{job_pitch.applicant.vidResume1ToStr}}" type="video/webm"/>
+					</video>
+					
+				</li>
+				{% endfor %}
+			{%else%}
+				<b>No applicants yet!</b>
+			{%endif%}
+		</ul>
+	{% endif %}
+	
+	{% if error_message %}
+		<p><strong>{{error_message}}</strong></p>
+	{% endif %}
+
+	{% csrf_token %}
+		
+	
+{%endblock%}
